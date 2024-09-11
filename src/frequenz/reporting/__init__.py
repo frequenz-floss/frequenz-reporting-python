@@ -1,10 +1,7 @@
 # License: MIT
 # Copyright © 2024 Frequenz Energy-as-a-Service GmbH
 
-"""A highlevel interface for the reporting API.
-
-TODO(cookiecutter): Add a more descriptive module description.
-"""
+"""A highlevel interface for the reporting API."""
 
 
 # TODO(cookiecutter): Remove this function

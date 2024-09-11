@@ -14,8 +14,7 @@ name = "frequenz-reporting-python"
 description = "A highlevel interface for the reporting API"
 readme = "README.md"
 license = { text = "MIT" }
-keywords = ["frequenz", "python", "lib", "library", "frequenz-reporting", "reporting", "highlevel", "tooling", "api"]
-# TODO(cookiecutter): Remove and add more classifiers if appropriate
+keywords = ["frequenz", "python", "lib", "library", "reporting", "highlevel", "tooling", "api"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -26,7 +25,6 @@ classifiers = [
   "Typing :: Typed",
 ]
 requires-python = ">= 3.11, < 4"
-# TODO(cookiecutter): Remove and add more dependencies if appropriate
 dependencies = [
   "typing-extensions >= 4.5.0, < 5",
 ]
@@ -36,7 +34,6 @@ dynamic = ["version"]
 name = "Frequenz Energy-as-a-Service GmbH"
 email = "floss@frequenz.com"
 
-# TODO(cookiecutter): Remove and add more optional dependencies if appropriate
 [project.optional-dependencies]
 dev-flake8 = [
   "flake8 == 7.1.0",
@@ -55,7 +52,7 @@ dev-mkdocs = [
   "mkdocs-macros-plugin == 1.0.5",
   "mkdocs-material == 9.5.27",
   "mkdocstrings[python] == 0.25.1",
-  "mkdocstrings-python == 1.10.5",
+  "mkdocstrings-python == 1.10.8",
   "frequenz-repo-config[lib] == 0.10.0",
 ]
 dev-mypy = [
@@ -166,7 +163,7 @@ packages = ["frequenz.reporting"]
 strict = true
 
 [[tool.mypy.overrides]]
-module = ["mkdocs_macros.*", "sybil", "sybil.*"]
+module = ["mkdocs_macros.*"]
 ignore_missing_imports = true
 
 [tool.setuptools_scm]
