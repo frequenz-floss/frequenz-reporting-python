@@ -10,7 +10,7 @@
 
 ## New Features
 
-* Add cumulative_energy calculation to read out energy consumption and production over a specified time range.
+<!-- Here goes the main new features and examples or instructions on how to use them -->
 
 ## Bug Fixes
 
