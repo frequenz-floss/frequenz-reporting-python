@@ -20,3 +20,52 @@ The following platforms are officially supported (tested):
 
 If you want to know how to build this project and contribute to it, please
 check out the [Contributing Guide](CONTRIBUTING.md).
+
+
+### Installation
+
+```bash
+# Choose the version you want to install
+VERSION=0.1.0
+pip install frequenz-reporting-python==$VERSION
+```
+
+
+### Initialize the client
+
+```python
+from datetime import datetime
+
+from frequenz.client.common.metric import Metric
+from frequenz.client.reporting import ReportingApiClient
+from frequenz.reporting._reporting import cumulative_energy
+
+# Change server address if needed
+SERVICE_ADDRESS = "reporting.api.frequenz.com:443"
+API_KEY = open('api_key.txt').read().strip()
+client = ReportingApiClient(service_address=SERVICE_ADDRESS, key=API_KEY)
+```
+
+### Calculate cumulative energy for a single microgrid and component:
+
+If the component does not measure `Metric.AC_ACTIVE_ENERGY`, set `use_active_power=True`
+to utilize `Metric.AC_ACTIVE_POWER` instead.
+
+A resolution can be set that alters how NaNs are handled, resulting in varying
+results. NaN values are ignored in sums, which may lead to significant data loss
+if many are present in the raw data. There is no universally correct method for
+handling NaNs, as their causes can vary.
+
+```python
+energy_reading = await cumulative_energy(
+			client=client,
+                        microgrid_id=1,
+                        component_id=100,
+                        start_time=datetime.fromisoformat("2024-09-01T00:00:00"),
+                        end_time=datetime.fromisoformat("2024-09-30T00:00:00"),
+                        use_active_power=True,
+                        resolution=10,
+    )
+
+print(energy_reading)
+```
