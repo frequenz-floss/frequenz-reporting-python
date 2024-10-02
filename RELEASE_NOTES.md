@@ -15,3 +15,4 @@
 ## Bug Fixes
 
 * Change 0.0 to nan if there is no data available
+* Enforce keyword arguments in cumulative_energy function
