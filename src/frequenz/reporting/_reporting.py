@@ -114,7 +114,7 @@ async def cumulative_energy(
                 elif last_value_diff < 0:
                     production += last_value_diff
     else:
-        consumption = production = 0.0
+        consumption = production = float("nan")
 
     return CumulativeEnergy(
         start_time=start_time,
