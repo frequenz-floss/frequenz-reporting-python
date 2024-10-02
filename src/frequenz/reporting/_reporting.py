@@ -17,6 +17,7 @@ CumulativeEnergy = namedtuple(
 
 # pylint: disable-next=too-many-arguments
 async def cumulative_energy(
+    *,
     client: ReportingApiClient,
     microgrid_id: int,
     component_id: int,
