@@ -26,7 +26,7 @@ check out the [Contributing Guide](CONTRIBUTING.md).
 
 ```bash
 # Choose the version you want to install
-VERSION=0.1.0
+VERSION=0.3.0
 pip install frequenz-reporting-python==$VERSION
 ```
 
@@ -40,8 +40,8 @@ from frequenz.client.common.metric import Metric
 from frequenz.client.reporting import ReportingApiClient
 from frequenz.reporting._reporting import cumulative_energy
 
-# Change server address if needed
-SERVICE_ADDRESS = "reporting.api.frequenz.com:443"
+# Change server address
+SERVICE_ADDRESS = "grpc://replace-this-with-your-server-url:port"
 API_KEY = open('api_key.txt').read().strip()
 client = ReportingApiClient(service_address=SERVICE_ADDRESS, key=API_KEY)
 ```
