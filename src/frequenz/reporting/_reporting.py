@@ -10,7 +10,7 @@ from typing import Any
 
 from frequenz.client.common.metric import Metric
 from frequenz.client.reporting import ReportingApiClient
-from frequenz.client.reporting._client import MetricSample
+from frequenz.client.reporting._types import MetricSample
 
 CumulativeEnergy = namedtuple(
     "CumulativeEnergy", ["start_time", "end_time", "consumption", "production"]
@@ -49,11 +49,11 @@ async def cumulative_energy(
 
     metric_samples = [
         sample
-        async for sample in client.list_microgrid_components_data(
+        async for sample in client.receive_microgrid_components_data(
             microgrid_components=[(microgrid_id, [component_id])],
             metrics=metric,
-            start_dt=start_time,
-            end_dt=end_time,
+            start_time=start_time,
+            end_time=end_time,
             resampling_period=resampling_period,
         )
     ]
@@ -101,22 +101,22 @@ async def cumulative_energy(
             # Fetch energy consumption and production metrics separately
             consumption_samples = [
                 sample
-                async for sample in client.list_microgrid_components_data(
+                async for sample in client.receive_microgrid_components_data(
                     microgrid_components=[(microgrid_id, [component_id])],
                     metrics=Metric.AC_ACTIVE_ENERGY_CONSUMED,
-                    start_dt=start_time,
-                    end_dt=end_time,
+                    start_time=start_time,
+                    end_time=end_time,
                     resampling_period=resampling_period,
                 )
             ]
 
             production_samples = [
                 sample
-                async for sample in client.list_microgrid_components_data(
+                async for sample in client.receive_microgrid_components_data(
                     microgrid_components=[(microgrid_id, [component_id])],
                     metrics=Metric.AC_ACTIVE_ENERGY_DELIVERED,
-                    start_dt=start_time,
-                    end_dt=end_time,
+                    start_time=start_time,
+                    end_time=end_time,
                     resampling_period=resampling_period,
                 )
             ]
@@ -350,11 +350,11 @@ async def _fetch_component_data(
     """
     return [
         sample
-        async for sample in client.list_microgrid_components_data(
+        async for sample in client.receive_microgrid_components_data(
             microgrid_components=microgrid_components,
             metrics=metrics,
-            start_dt=start_time,
-            end_dt=end_time,
+            start_time=start_time,
+            end_time=end_time,
             resampling_period=resampling_period,
             include_states=include_states,
             include_bounds=include_bounds,
