@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Any
 
 import pytest
-from frequenz.client.reporting._client import MetricSample
+from frequenz.client.reporting._types import MetricSample
 
 from frequenz.reporting import delete_me
 from frequenz.reporting._reporting import extract_state_durations
@@ -23,8 +23,8 @@ test_cases_extract_state_durations = [
     {
         "description": "No matching metrics",
         "samples": [
-            MetricSample(datetime(2023, 1, 1, 0, 0), 1, 101, "temperature", 25),
-            MetricSample(datetime(2023, 1, 1, 1, 0), 1, 101, "humidity", 60),
+            MetricSample(datetime(2023, 1, 1, 0, 0), 1, "101", "temperature", 25),
+            MetricSample(datetime(2023, 1, 1, 1, 0), 1, "101", "humidity", 60),
         ],
         "alert_states": [1],
         "include_warnings": True,
@@ -34,15 +34,15 @@ test_cases_extract_state_durations = [
     {
         "description": "Single state change",
         "samples": [
-            MetricSample(datetime(2023, 1, 1, 0, 0), 1, 101, "state", 0),
-            MetricSample(datetime(2023, 1, 1, 1, 0), 1, 101, "state", 1),
+            MetricSample(datetime(2023, 1, 1, 0, 0), 1, "101", "state", 0),
+            MetricSample(datetime(2023, 1, 1, 1, 0), 1, "101", "state", 1),
         ],
         "alert_states": [1],
         "include_warnings": True,
         "expected_all_states": [
             {
                 "microgrid_id": 1,
-                "component_id": 101,
+                "component_id": "101",
                 "state_type": "state",
                 "state_value": 0,
                 "start_time": datetime(2023, 1, 1, 0, 0),
@@ -50,7 +50,7 @@ test_cases_extract_state_durations = [
             },
             {
                 "microgrid_id": 1,
-                "component_id": 101,
+                "component_id": "101",
                 "state_type": "state",
                 "state_value": 1,
                 "start_time": datetime(2023, 1, 1, 1, 0),
@@ -60,7 +60,7 @@ test_cases_extract_state_durations = [
         "expected_alert_records": [
             {
                 "microgrid_id": 1,
-                "component_id": 101,
+                "component_id": "101",
                 "state_type": "state",
                 "state_value": 1,
                 "start_time": datetime(2023, 1, 1, 1, 0),
@@ -71,10 +71,10 @@ test_cases_extract_state_durations = [
     {
         "description": "Warnings and errors included",
         "samples": [
-            MetricSample(datetime(2023, 1, 2, 0, 0), 3, 303, "state", 0),
-            MetricSample(datetime(2023, 1, 2, 0, 30), 3, 303, "warning", "W1"),
-            MetricSample(datetime(2023, 1, 2, 1, 0), 3, 303, "state", 1),
-            MetricSample(datetime(2023, 1, 2, 1, 30), 3, 303, "error", "E1"),
+            MetricSample(datetime(2023, 1, 2, 0, 0), 3, "303", "state", 0),
+            MetricSample(datetime(2023, 1, 2, 0, 30), 3, "303", "warning", 10),
+            MetricSample(datetime(2023, 1, 2, 1, 0), 3, "303", "state", 1),
+            MetricSample(datetime(2023, 1, 2, 1, 30), 3, "303", "error", 20),
         ],
         "alert_states": [1],
         "include_warnings": True,
@@ -82,7 +82,7 @@ test_cases_extract_state_durations = [
             # State transitions
             {
                 "microgrid_id": 3,
-                "component_id": 303,
+                "component_id": "303",
                 "state_type": "state",
                 "state_value": 0,
                 "start_time": datetime(2023, 1, 2, 0, 0),
@@ -90,7 +90,7 @@ test_cases_extract_state_durations = [
             },
             {
                 "microgrid_id": 3,
-                "component_id": 303,
+                "component_id": "303",
                 "state_type": "state",
                 "state_value": 1,
                 "start_time": datetime(2023, 1, 2, 1, 0),
@@ -99,18 +99,18 @@ test_cases_extract_state_durations = [
             # Warning transitions
             {
                 "microgrid_id": 3,
-                "component_id": 303,
+                "component_id": "303",
                 "state_type": "warning",
-                "state_value": "W1",
+                "state_value": 10,
                 "start_time": datetime(2023, 1, 2, 0, 30),
                 "end_time": None,
             },
             # Error transitions
             {
                 "microgrid_id": 3,
-                "component_id": 303,
+                "component_id": "303",
                 "state_type": "error",
-                "state_value": "E1",
+                "state_value": 20,
                 "start_time": datetime(2023, 1, 2, 1, 30),
                 "end_time": None,
             },
@@ -118,24 +118,24 @@ test_cases_extract_state_durations = [
         "expected_alert_records": [
             {
                 "microgrid_id": 3,
-                "component_id": 303,
+                "component_id": "303",
                 "state_type": "warning",
-                "state_value": "W1",
+                "state_value": 10,
                 "start_time": datetime(2023, 1, 2, 0, 30),
                 "end_time": None,
             },
             {
                 "microgrid_id": 3,
-                "component_id": 303,
+                "component_id": "303",
                 "state_type": "error",
-                "state_value": "E1",
+                "state_value": 20,
                 "start_time": datetime(2023, 1, 2, 1, 30),
                 "end_time": None,
             },
             # State alert
             {
                 "microgrid_id": 3,
-                "component_id": 303,
+                "component_id": "303",
                 "state_type": "state",
                 "state_value": 1,
                 "start_time": datetime(2023, 1, 2, 1, 0),
