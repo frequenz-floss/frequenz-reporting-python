@@ -6,7 +6,7 @@
 
 ## Upgrading
 
-- The reporting API client version is updated to `>= 0.18.0, < 0.19.0`.
+<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
 
 ## New Features
 
