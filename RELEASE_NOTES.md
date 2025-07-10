@@ -6,7 +6,7 @@
 
 ## Upgrading
 
-<!-- Here goes notes on how to upgrade from previous versions, including deprecations and what they should be replaced with -->
+- Refactored state extraction to return `StateRecord` objects with descriptive enum names (e.g., "ACTIVE", "FAULT") instead of raw integers for `state_value`, improving clarity and downstream usability.
 
 ## New Features
 

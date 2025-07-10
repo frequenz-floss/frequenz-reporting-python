@@ -6,16 +6,26 @@ from datetime import datetime
 from typing import Any
 
 import pytest
+from frequenz.client.common.enum_proto import enum_from_proto
+from frequenz.client.common.microgrid.components import (
+    ComponentErrorCode,
+    ComponentStateCode,
+)
 from frequenz.client.reporting._types import MetricSample
 
-from frequenz.reporting import delete_me
-from frequenz.reporting._reporting import extract_state_durations
+from frequenz.reporting._reporting import (
+    _extract_state_records,
+    _filter_alerts,
+    _resolve_enum_name,
+)
 
 test_cases_extract_state_durations = [
     {
         "description": "Empty samples",
         "samples": [],
-        "alert_states": [1, 2],
+        "alert_states": [
+            enum_from_proto(1, ComponentStateCode),
+        ],
         "include_warnings": True,
         "expected_all_states": [],
         "expected_alert_records": [],
@@ -26,7 +36,7 @@ test_cases_extract_state_durations = [
             MetricSample(datetime(2023, 1, 1, 0, 0), 1, "101", "temperature", 25),
             MetricSample(datetime(2023, 1, 1, 1, 0), 1, "101", "humidity", 60),
         ],
-        "alert_states": [1],
+        "alert_states": [enum_from_proto(1, ComponentStateCode)],
         "include_warnings": True,
         "expected_all_states": [],
         "expected_alert_records": [],
@@ -37,14 +47,14 @@ test_cases_extract_state_durations = [
             MetricSample(datetime(2023, 1, 1, 0, 0), 1, "101", "state", 0),
             MetricSample(datetime(2023, 1, 1, 1, 0), 1, "101", "state", 1),
         ],
-        "alert_states": [1],
+        "alert_states": [enum_from_proto(1, ComponentStateCode)],
         "include_warnings": True,
         "expected_all_states": [
             {
                 "microgrid_id": 1,
                 "component_id": "101",
                 "state_type": "state",
-                "state_value": 0,
+                "state_value": _resolve_enum_name(0, ComponentStateCode),
                 "start_time": datetime(2023, 1, 1, 0, 0),
                 "end_time": datetime(2023, 1, 1, 1, 0),
             },
@@ -52,7 +62,7 @@ test_cases_extract_state_durations = [
                 "microgrid_id": 1,
                 "component_id": "101",
                 "state_type": "state",
-                "state_value": 1,
+                "state_value": _resolve_enum_name(1, ComponentStateCode),
                 "start_time": datetime(2023, 1, 1, 1, 0),
                 "end_time": None,
             },
@@ -62,7 +72,7 @@ test_cases_extract_state_durations = [
                 "microgrid_id": 1,
                 "component_id": "101",
                 "state_type": "state",
-                "state_value": 1,
+                "state_value": _resolve_enum_name(1, ComponentStateCode),
                 "start_time": datetime(2023, 1, 1, 1, 0),
                 "end_time": None,
             },
@@ -76,7 +86,7 @@ test_cases_extract_state_durations = [
             MetricSample(datetime(2023, 1, 2, 1, 0), 3, "303", "state", 1),
             MetricSample(datetime(2023, 1, 2, 1, 30), 3, "303", "error", 20),
         ],
-        "alert_states": [1],
+        "alert_states": [enum_from_proto(1, ComponentStateCode)],
         "include_warnings": True,
         "expected_all_states": [
             # State transitions
@@ -84,7 +94,7 @@ test_cases_extract_state_durations = [
                 "microgrid_id": 3,
                 "component_id": "303",
                 "state_type": "state",
-                "state_value": 0,
+                "state_value": _resolve_enum_name(0, ComponentStateCode),
                 "start_time": datetime(2023, 1, 2, 0, 0),
                 "end_time": datetime(2023, 1, 2, 1, 0),
             },
@@ -92,7 +102,7 @@ test_cases_extract_state_durations = [
                 "microgrid_id": 3,
                 "component_id": "303",
                 "state_type": "state",
-                "state_value": 1,
+                "state_value": _resolve_enum_name(1, ComponentStateCode),
                 "start_time": datetime(2023, 1, 2, 1, 0),
                 "end_time": None,
             },
@@ -101,7 +111,7 @@ test_cases_extract_state_durations = [
                 "microgrid_id": 3,
                 "component_id": "303",
                 "state_type": "warning",
-                "state_value": 10,
+                "state_value": _resolve_enum_name(10, ComponentErrorCode),
                 "start_time": datetime(2023, 1, 2, 0, 30),
                 "end_time": None,
             },
@@ -110,7 +120,7 @@ test_cases_extract_state_durations = [
                 "microgrid_id": 3,
                 "component_id": "303",
                 "state_type": "error",
-                "state_value": 20,
+                "state_value": _resolve_enum_name(20, ComponentErrorCode),
                 "start_time": datetime(2023, 1, 2, 1, 30),
                 "end_time": None,
             },
@@ -120,7 +130,7 @@ test_cases_extract_state_durations = [
                 "microgrid_id": 3,
                 "component_id": "303",
                 "state_type": "warning",
-                "state_value": 10,
+                "state_value": _resolve_enum_name(10, ComponentErrorCode),
                 "start_time": datetime(2023, 1, 2, 0, 30),
                 "end_time": None,
             },
@@ -128,7 +138,7 @@ test_cases_extract_state_durations = [
                 "microgrid_id": 3,
                 "component_id": "303",
                 "state_type": "error",
-                "state_value": 20,
+                "state_value": _resolve_enum_name(20, ComponentErrorCode),
                 "start_time": datetime(2023, 1, 2, 1, 30),
                 "end_time": None,
             },
@@ -137,7 +147,7 @@ test_cases_extract_state_durations = [
                 "microgrid_id": 3,
                 "component_id": "303",
                 "state_type": "state",
-                "state_value": 1,
+                "state_value": _resolve_enum_name(1, ComponentStateCode),
                 "start_time": datetime(2023, 1, 2, 1, 0),
                 "end_time": None,
             },
@@ -149,11 +159,19 @@ test_cases_extract_state_durations = [
 @pytest.mark.parametrize(
     "test_case", test_cases_extract_state_durations, ids=lambda tc: tc["description"]
 )
-def test_extract_state_durations(test_case: dict[str, Any]) -> None:
-    """Test the extract_state_durations function."""
-    all_states, alert_records = extract_state_durations(
-        test_case["samples"], test_case["alert_states"], test_case["include_warnings"]
+def test_extract_and_filter_state_records(test_case: dict[str, Any]) -> None:
+    """Test extracting and filtering state records from samples."""
+    _all_states = _extract_state_records(
+        test_case["samples"], test_case["include_warnings"]
     )
+    print(test_case["alert_states"])
+    _alert_records = _filter_alerts(
+        _all_states,
+        alert_states=test_case["alert_states"],
+        include_warnings=test_case["include_warnings"],
+    )
+    all_states = [record._asdict() for record in _all_states]
+    alert_records = [record._asdict() for record in _alert_records]
 
     expected_all_states = test_case["expected_all_states"]
     expected_alert_records = test_case["expected_alert_records"]
@@ -195,17 +213,5 @@ def test_extract_state_durations(test_case: dict[str, Any]) -> None:
             x["start_time"],
         ),
     )
-
     assert all_states_sorted == expected_all_states_sorted
     assert alert_records_sorted == expected_alert_records_sorted
-
-
-def test_frequenz_reporting_succeeds() -> None:  # TODO(cookiecutter): Remove
-    """Test that the delete_me function succeeds."""
-    assert delete_me() is True
-
-
-def test_frequenz_reporting_fails() -> None:  # TODO(cookiecutter): Remove
-    """Test that the delete_me function fails."""
-    with pytest.raises(RuntimeError, match="This function should be removed!"):
-        delete_me(blow_up=True)
