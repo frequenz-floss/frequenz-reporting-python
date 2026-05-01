@@ -66,7 +66,7 @@ dev-mkdocs = [
   "frequenz-repo-config[lib] == 0.17.0",
 ]
 dev-mypy = [
-  "mypy == 1.20.0",
+  "mypy == 1.20.2",
   "types-Markdown == 3.10.2.20260211",
   # For checking the noxfile, docs/ script, and tests
   "frequenz-reporting-python[dev-mkdocs,dev-noxfile,dev-pytest]",
@@ -78,7 +78,7 @@ dev-pylint = [
   "frequenz-reporting-python[dev-mkdocs,dev-noxfile,dev-pytest]",
 ]
 dev-pytest = [
-  "pytest == 9.0.2",
+  "pytest == 9.0.3",
   "pylint == 4.0.5", # We need this to check for the examples
   "frequenz-repo-config[extra-lint-examples] == 0.17.0",
   "pytest-mock == 3.15.1",
