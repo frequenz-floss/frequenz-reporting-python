@@ -2,6 +2,7 @@
 # Copyright © 2024 Frequenz Energy-as-a-Service GmbH
 
 """Tests for the frequenz.reporting package."""
+
 import pytest
 
 from frequenz.reporting import delete_me
